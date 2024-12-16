@@ -16,7 +16,9 @@ public class VerificationAgent extends Agent {
             public void action() {
                 ACLMessage message = receive();
                 if (message != null) {
-                    System.out.println("\n\n" + "VerificationAgent received services: " + message.getContent());
+                    System.out.println("\n\n");
+
+                    System.out.println("VerificationAgent received services: " + message.getContent());
 
                     // Parse QoS data from XML file
                     String bestService = evaluateQoS("qos.xml");
@@ -27,7 +29,9 @@ public class VerificationAgent extends Agent {
                     reply.addReceiver(getAID("InfrastructureAgent"));
                     reply.setContent(bestService);
                     send(reply);
-                    System.out.println("Sent best service to InfrastructureAgent.\n");
+                    System.out.println("Sent best service to InfrastructureAgent.");
+
+                    System.out.println("\n");
                 } else {
                     block();
                 }
@@ -63,6 +67,7 @@ public class VerificationAgent extends Agent {
                     }
                 }
             }
+            
             return bestService;
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,3 +75,4 @@ public class VerificationAgent extends Agent {
         }
     }
 }
+

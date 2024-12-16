@@ -14,11 +14,13 @@ public class Main {
 
         try {
             // Launch agents
+            AgentController interfaceAgent = mainContainer.createNewAgent("InterfaceAgent", InterfaceAgent.class.getName(), null);
             AgentController receptionAgent = mainContainer.createNewAgent("ReceptionAgent", ReceptionAgent.class.getName(), null);
             AgentController discoveryAgent = mainContainer.createNewAgent("DiscoveryAgent", DiscoveryAgent.class.getName(), null);
             AgentController verificationAgent = mainContainer.createNewAgent("VerificationAgent", VerificationAgent.class.getName(), null);
             AgentController infrastructureAgent = mainContainer.createNewAgent("InfrastructureAgent", InfrastructureAgent.class.getName(), null);
 
+            interfaceAgent.start();
             receptionAgent.start();
             discoveryAgent.start();
             verificationAgent.start();

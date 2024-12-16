@@ -12,7 +12,9 @@ public class DiscoveryAgent extends Agent {
             public void action() {
                 ACLMessage message = receive();
                 if (message != null) {
-                    System.out.println("\n\nDiscoveryAgent received request: " + message.getContent());
+                    System.out.println("\n\n");
+
+                    System.out.println("DiscoveryAgent received request: " + message.getContent());
 
                     // Simulate discovering services
                     String discoveredServices = "AWS, Google Cloud";
@@ -23,7 +25,9 @@ public class DiscoveryAgent extends Agent {
                     reply.addReceiver(getAID("VerificationAgent"));
                     reply.setContent(discoveredServices);
                     send(reply);
-                    System.out.println("Sent services to VerificationAgent.\n");
+                    System.out.println("Sent services to VerificationAgent.");
+
+                    System.out.println("\n");
                 } else {
                     block();
                 }

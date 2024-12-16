@@ -1,0 +1,14 @@
+<services>
+    <service>
+        <name>AWS</name>
+        <latency>50</latency>
+        <availability>99.9</availability>
+        <cost>200</cost>
+    </service>
+    <service>
+        <name>Google Cloud</name>
+        <latency>70</latency>
+        <availability>99.95</availability>
+        <cost>150</cost>
+    </service>
+</services>

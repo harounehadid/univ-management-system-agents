@@ -1,5 +1,6 @@
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.lang.acl.ACLMessage;
 
 public class ReceptionAgent extends Agent {
     @Override
@@ -9,18 +10,17 @@ public class ReceptionAgent extends Agent {
         addBehaviour(new OneShotBehaviour() {
             @Override
             public void action() {
-                // Simulate receiving client request
+                // Simulate receiving a client request
                 String clientRequest = "Request: Low-latency video streaming + High-availability storage";
-                System.out.println("Received client request: " + clientRequest);
+                System.out.println("\n\n" + "Received client request: " + clientRequest);
 
-                // Forward request to Discovery Node
-                sendToDiscoveryNode(clientRequest);
+                // Send request to DiscoveryAgent via ACLMessage
+                ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+                message.addReceiver(getAID("DiscoveryAgent"));
+                message.setContent(clientRequest);
+                send(message);
+                System.out.println("Sent request to DiscoveryAgent.\n");
             }
         });
-    }
-
-    private void sendToDiscoveryNode(String request) {
-        // Logic to communicate with DiscoveryAgent
-        System.out.println("Forwarding request to DiscoveryAgent: " + request);
     }
 }

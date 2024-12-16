@@ -16,14 +16,20 @@ public class DiscoveryAgent extends Agent {
 
                     System.out.println("DiscoveryAgent received request: " + message.getContent());
 
+                    String content = message.getContent();
+                    String[] parts = content.split(",");
+                    int totalTasks = Integer.parseInt(parts[0]);
+                    int numVMs = Integer.parseInt(parts[1]);
+                    int maxTasksPerVM = Integer.parseInt(parts[2]);
+
                     // Simulate discovering services
-                    String discoveredServices = "AWS, Google Cloud";
+                    String discoveredServices = "AWS,Google Cloud";
                     System.out.println("Discovered services: " + discoveredServices);
 
                     // Send services to VerificationAgent
                     ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
                     reply.addReceiver(getAID("VerificationAgent"));
-                    reply.setContent(discoveredServices);
+                    reply.setContent(totalTasks + "," + numVMs + "," + maxTasksPerVM + "," + discoveredServices);
                     send(reply);
                     System.out.println("Sent services to VerificationAgent.");
 

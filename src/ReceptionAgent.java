@@ -3,10 +3,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
 public class ReceptionAgent extends Agent {
-    private int totalTasks;
-    private int numVMs;
-    private int maxTasksPerVM;
-
     @Override
     protected void setup() {
         System.out.println("ReceptionAgent started.");
@@ -20,27 +16,22 @@ public class ReceptionAgent extends Agent {
 
                     String content = message.getContent();
                     String[] parts = content.split(",");
-                    totalTasks = Integer.parseInt(parts[0]);
-                    numVMs = Integer.parseInt(parts[1]);
-                    maxTasksPerVM = Integer.parseInt(parts[2]);
+                    int totalTasks = Integer.parseInt(parts[0]);
+                    int numVMs = Integer.parseInt(parts[1]);
+                    int maxTasksPerVM = Integer.parseInt(parts[2]);
 
                     System.out.println("Received input: " +
                             totalTasks + " tasks, " + numVMs + " VMs, " + maxTasksPerVM + " tasks per VM.");
 
-                    // Send the data to the DiscoveryAgent
-                    sendToDiscoveryAgent();
-                    
-                    System.out.println("\n");
+                    // Send services to DiscoveryAgent
+                    ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
+                    reply.addReceiver(getAID("DiscoveryAgent"));
+                    reply.setContent(totalTasks + "," + numVMs + "," + maxTasksPerVM);
+                    send(reply);
+
+                    System.out.println("Sent services to DiscoveryAgent.");
                 }
             }
         });
-    }
-
-    private void sendToDiscoveryAgent() {
-        ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-        message.addReceiver(getAID("DiscoveryAgent"));
-        message.setContent(totalTasks + "," + numVMs + "," + maxTasksPerVM);
-        send(message);
-        System.out.println("Sent input to DiscoveryAgent.");
     }
 }

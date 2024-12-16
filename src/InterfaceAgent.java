@@ -50,23 +50,18 @@ public class InterfaceAgent extends Agent {
                 int maxTasksPerVM = Integer.parseInt(vmTaskLimitField.getText());
 
                 // Send these inputs to the ReceptionAgent
-                sendInputToReceptionAgent(totalTasks, numVMs, maxTasksPerVM);
+                System.out.println("\n\n");
+
+                ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+                message.addReceiver(getAID("ReceptionAgent"));
+                message.setContent(totalTasks + "," + numVMs + "," + maxTasksPerVM);
+                send(message);
+                System.out.println("Sent input to ReceptionAgent: " + totalTasks + " tasks, " + numVMs + " VMs, " + maxTasksPerVM + " tasks per VM.");
+
                 frame.setVisible(false); // Close the window after submission
             }
         });
 
         frame.setVisible(true);
-    }
-
-    private void sendInputToReceptionAgent(int totalTasks, int numVMs, int maxTasksPerVM) {
-        System.out.println("\n\n");
-
-        ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-        message.addReceiver(getAID("ReceptionAgent"));
-        message.setContent(totalTasks + "," + numVMs + "," + maxTasksPerVM);
-        send(message);
-        System.out.println("Sent input to ReceptionAgent: " + totalTasks + " tasks, " + numVMs + " VMs, " + maxTasksPerVM + " tasks per VM.");
-        
-        System.out.println("\n");
     }
 }

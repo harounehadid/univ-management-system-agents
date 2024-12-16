@@ -1,5 +1,5 @@
 import jade.core.Agent;
-import jade.core.behaviours.OneShotBehaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,34 +7,58 @@ import java.util.List;
 public class InfrastructureAgent extends Agent {
     private List<VM> vmList; // List of VMs
     private int totalTasks; // Total number of tasks to execute
+    private int numVMs;
+    private int maxTasksPerVM;
     private int tasksAssigned; // Number of tasks already assigned
+    private String service; // Service to host VMs
 
     @Override
     protected void setup() {
         System.out.println("InfrastructureAgent started.");
-        vmList = new ArrayList<>();
-        tasksAssigned = 0;
 
-        // Initialize some VMs with a task limit
-        vmList.add(new VM("VM1", 2, 4, "available", 3)); // Handles 3 tasks
-        vmList.add(new VM("VM2", 4, 8, "available", 5)); // Handles 5 tasks
-
-        // Example: User specifies total tasks
-        totalTasks = 10; // Replace with dynamic input if needed
-
-        addBehaviour(new OneShotBehaviour() {
+        addBehaviour(new CyclicBehaviour() {
             @Override
             public void action() {
-                while (tasksAssigned < totalTasks) {
-                    String result = assignTask("Task" + (tasksAssigned + 1));
-                    System.out.println(result);
+                ACLMessage message = receive();
+
+                if (message != null) {
+                    System.out.println("\n\n");
+
+                    System.out.println("InfrastructureAgent received input: " + message.getContent() + "\n");
+
+                    String content = message.getContent();
+                    String[] parts = content.split(",");
+                    totalTasks = Integer.parseInt(parts[0]);
+                    numVMs = Integer.parseInt(parts[1]);
+                    maxTasksPerVM = Integer.parseInt(parts[2]);
+                    service = parts[3];
+
+                    // Initialize the VM list
+                    vmList = new ArrayList<>();
+
+                    for (int i = 0; i < numVMs; i++) {
+                        vmList.add(new VM("VM" + (i + 1), 4, 8, "available", maxTasksPerVM));
+                    }
+                    
+                    // Asign tasks to VMs
+                    tasksAssigned = 0;
+
+                    while (tasksAssigned < totalTasks) {
+                        String result = assignTask("Task" + (tasksAssigned + 1), maxTasksPerVM);
+                        System.out.println(result);
+                    }
+
+                    System.out.println("\nAll tasks have been assigned and hosted on " + service + "!");
+                    
+                    System.out.println("\n");
+                } else {
+                    block();
                 }
-                System.out.println("All tasks have been assigned!");
             }
         });
     }
 
-    private String assignTask(String taskName) {
+    private String assignTask(String taskName, int maxTasksPerVM) {
         for (VM vm : vmList) {
             if (vm.canHandleMoreTasks()) {
                 vm.incrementTasks();
@@ -44,17 +68,17 @@ public class InfrastructureAgent extends Agent {
         }
 
         // No VM can handle more tasks, create a new VM
-        VM newVm = createNewVM();
+        VM newVm = createNewVM(maxTasksPerVM);
         vmList.add(newVm);
         newVm.incrementTasks();
         tasksAssigned++;
         return "No available VM. Created " + newVm.getName() + " and assigned " + taskName;
     }
 
-    private VM createNewVM() {
+    private VM createNewVM(int maxTasksPerVM) {
         String vmName = "VM" + (vmList.size() + 1);
         System.out.println("Creating new VM: " + vmName);
-        return new VM(vmName, 4, 8, "available", 4); // New VM handles 4 tasks
+        return new VM(vmName, 4, 8, "available", maxTasksPerVM); // New VM handles 4 tasks
     }
 }
 

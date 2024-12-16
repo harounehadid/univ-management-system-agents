@@ -1,5 +1,4 @@
 import jade.core.Agent;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import javax.swing.*;
 import java.awt.*;
